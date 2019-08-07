@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"project/database"
+	"project2/database"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,12 +10,10 @@ import (
 func Delete(c *gin.Context) {
 	db := database.Conn()
 
-	delete, err := db.Prepare("DELETE FROM thongtins WHERE id=?")
-	if err != nil {
-		panic(err.Error())
-	}
+	id := c.Params.ByName("id")
+	var info Infos
 
-	delete.Exec(c.Param("id"))
+	db.Delete(&info, "id = ?", id)
 	c.JSON(200, gin.H{
 		"messages": "deleted",
 	})

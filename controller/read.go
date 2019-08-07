@@ -14,11 +14,11 @@ func Read(c *gin.Context) {
 	defer db.Close()
 
 	id := c.Params.ByName("id")
-	var thongtin Thongtins
+	var info Infos
 	// SELECT * FROM users WHERE id = 1;
-	db.First(&thongtin, id)
+	db.First(&info, id)
 
 	// Display JSON result
-	c.JSON(200, thongtin)
+	c.JSON(200, info)
 
 }

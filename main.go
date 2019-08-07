@@ -8,13 +8,14 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.Use(Cors())
+
 	v := r.Group("api")
 	{
+		r.Use(Cors())
 		v.GET("/alluser", controller.ReadAll)
 		v.GET("/user/:id", controller.Read)
 		v.POST("/create", controller.Create)
-		v.PUT("/update/:id", controller.Update)
+		v.POST("/update/:id", controller.Update)
 		v.DELETE("/delete/:id", controller.Delete)
 	}
 	r.Run(":8080")
@@ -23,7 +24,7 @@ func main() {
 //Cors is ..
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Add("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:4200/")
 		c.Next()
 	}
 }

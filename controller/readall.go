@@ -13,11 +13,11 @@ func ReadAll(c *gin.Context) {
 	// Close connection database
 	defer db.Close()
 
-	var thongtin []Thongtins
+	var info []Infos
 	// SELECT * FROM users
-	db.Find(&thongtin)
+	db.Find(&info)
 
 	// Display JSON result
-	c.JSON(200, thongtin)
+	c.JSON(200, info)
 
 }

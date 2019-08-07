@@ -1,38 +1,53 @@
 package controller
 
 import (
-	"project/database"
+	"project2/database"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
+//Update is ..
 func Update(c *gin.Context) {
 	db := database.Conn()
+
 	type UpdatePost struct {
-		Username    string    `form:"username" json:"username" binding:"required"`
-		Password    string    `form:"password" json:"password" binding:"required"`
-		Email       string    `form:"email" json:"email" binding:"required"`
-		Birth       time.Time `form:"birth" json:"birth" binding:"required"`
-		Sex         string    `form:"sex" json:"sex" binding:"required"`
-		Phone       string    `form:"phone" json:"phone" binding:"required"`
-		National_id int       `form:"national_id" json:"national_id" binding:"required"`
-		Height      float64   `form:"height" json:"height" binding:"required"`
+		Username   string
+		Password   string
+		Email      string
+		Birth      time.Time
+		Sex        string
+		Phone      string
+		NationalID int
+		Height     float64
 	}
+	var info UpdatePost
 
-	var json UpdatePost
-	if err := c.ShouldBindJSON(&json); err == nil {
-		edit, err := db.Prepare("UPDATE thongtins SET username=?, password=?, email=?, birth=?, sex=?, phone=?, national_id=?, height=? WHERE id = " + c.Param("id"))
-		if err != nil {
-			panic(err.Error())
+	if err := c.ShouldBindJSON(&info); err == nil {
+		info = UpdatePost{
+			Username:   info.Username,
+			Password:   GetMD5Hash(info.Password),
+			Email:      info.Email,
+			Birth:      info.Birth,
+			Sex:        info.Sex,
+			Phone:      info.Phone,
+			NationalID: info.NationalID,
+			Height:     info.Height,
 		}
-		edit.Exec(json.Username, json.Password, json.Email, json.Birth, json.Sex, json.Phone, json.National_id, json.Height)
-
+		db.Table("infos").Where("ID = ?", c.Param("id")).Updates(&info)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"messages": err,
+			})
+		}
 		c.JSON(200, gin.H{
-			"messages": "edited",
+			"messages": "thanh cong",
 		})
+
 	} else {
 		c.JSON(500, gin.H{"error": err.Error()})
 	}
+
 	defer db.Close()
+
 }

@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-//Thongtins is ..
-type Thongtins struct {
+//Infos is ..
+type Infos struct {
 	ID         int
 	Username   string
 	Password   string

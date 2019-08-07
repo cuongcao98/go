@@ -9,34 +9,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Create is ..
+//Create new user
 func Create(c *gin.Context) {
 	db := database.Conn()
 	defer db.Close()
-	type Thongtin struct {
-		Username   string    `form:"username" json:"username" binding:"required"`
-		Password   string    `form:"password" json:"password" binding:"required"`
-		Email      string    `form:"email" json:"email" binding:"required"`
-		Birth      time.Time `form:"birth" json:"birth" binding:"required"`
-		Sex        string    `form:"sex" json:"sex" binding:"required"`
-		Phone      string    `form:"phone" json:"phone" binding:"required"`
-		NationalID int       `form:"national_id" json:"nationalID" binding:"required"`
-		Height     float64   `form:"height" json:"height" binding:"required"`
+	type Info struct {
+		Username   string
+		Password   string
+		Email      string
+		Birth      time.Time
+		Sex        string
+		Phone      string
+		NationalID int
+		Height     float64
 	}
 
-	var thongtin Thongtin
-	// c.JSON(201, gin.H{"success": thongtin})
+	var info Info
 
-	if err := c.ShouldBindJSON(&thongtin); err == nil {
-		thongtin = Thongtin{Username: thongtin.Username, Password: GetMD5Hash(thongtin.Password), Email: thongtin.Email, Birth: thongtin.Birth, Sex: thongtin.Sex, Phone: thongtin.Phone, NationalID: thongtin.NationalID, Height: thongtin.Height}
-		db.Create(&thongtin)
+	if err := c.ShouldBindJSON(&info); err == nil {
+		info = Info{Username: info.Username,
+			Password:   GetMD5Hash(info.Password),
+			Email:      info.Email,
+			Birth:      info.Birth,
+			Sex:        info.Sex,
+			Phone:      info.Phone,
+			NationalID: info.NationalID,
+			Height:     info.Height}
+		db.Create(&info)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"messages": err,
 			})
 		}
 		c.JSON(200, gin.H{
-			"messages": thongtin,
+			"messages": info,
 		})
 
 	} else {
